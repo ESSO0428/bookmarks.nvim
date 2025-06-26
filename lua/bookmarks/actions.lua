@@ -170,6 +170,9 @@ local function attach_to_buffer(bufnr)
   attached_buffers[bufnr] = true
 
   api.nvim_buf_attach(bufnr, false, {
+    on_detach = function()
+      attached_buffers[bufnr] = nil
+    end,
     on_lines = function(_, _, _, firstline, old_lastline, new_lastline, _)
       local file = uv.fs_realpath(api.nvim_buf_get_name(bufnr))
       if not file or not config.cache.data[file] then return end
